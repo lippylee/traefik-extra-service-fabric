@@ -133,6 +133,18 @@ func (p *Provider) getConfiguration() (*types.Configuration, error) {
 	return p.buildConfiguration(services)
 }
 
+func (p *Provider) GetSFConfig() (string, error) {
+	services, err := getClusterServices(p.sfClient)
+	if err != nil {
+		return "", err
+	}
+	return p.BuildFSConfig(services)
+}
+
+func (p *Provider) BuildFSConfig(services []ServiceItemExtended) (string, error) {
+	return p.buildFSConfiguration(services)
+}
+
 func getClusterServices(sfClient sfClient) ([]ServiceItemExtended, error) {
 	apps, err := sfClient.GetApplications()
 	if err != nil {

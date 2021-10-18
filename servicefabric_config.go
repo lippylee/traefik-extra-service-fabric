@@ -64,6 +64,58 @@ func (p *Provider) buildConfiguration(services []ServiceItemExtended) (*types.Co
 	return p.GetConfiguration(tmpl, sfFuncMap, templateObjects)
 }
 
+func (p *Provider) buildFSConfiguration(services []ServiceItemExtended) (string, error) {
+	sfFuncMap := template.FuncMap{
+		// Services
+		"getServices":                getServices,
+		"hasLabel":                   hasService,
+		"getLabelValue":              getServiceStringLabel,
+		"getLabelsWithPrefix":        getServiceLabelsWithPrefix,
+		"isPrimary":                  isPrimary,
+		"isStateful":                 isStateful,
+		"isStateless":                isStateless,
+		"isEnabled":                  getFuncBoolLabel(label.TraefikEnable, false),
+		"getBackendName":             getBackendName,
+		"getDefaultEndpoint":         getDefaultEndpoint,
+		"getNamedEndpoint":           getNamedEndpoint,           // TODO unused
+		"getApplicationParameter":    getApplicationParameter,    // TODO unused
+		"doesAppParamContain":        doesAppParamContain,        // TODO unused
+		"filterServicesByLabelValue": filterServicesByLabelValue, // TODO unused
+
+		// Backend functions
+		"getWeight":         getFuncServiceIntLabel(label.TraefikWeight, label.DefaultWeight),
+		"getProtocol":       getFuncServiceStringLabel(label.TraefikProtocol, label.DefaultProtocol),
+		"getMaxConn":        getMaxConn,
+		"getHealthCheck":    getHealthCheck,
+		"getCircuitBreaker": getCircuitBreaker,
+		"getLoadBalancer":   getLoadBalancer,
+
+		// Frontend Functions
+		"getPriority":       getFuncServiceIntLabel(label.TraefikFrontendPriority, label.DefaultFrontendPriority),
+		"getPassHostHeader": getFuncServiceBoolLabel(label.TraefikFrontendPassHostHeader, label.DefaultPassHostHeader),
+		"getPassTLSCert":    getFuncBoolLabel(label.TraefikFrontendPassTLSCert, label.DefaultPassTLSCert),
+		"getEntryPoints":    getFuncServiceSliceStringLabel(label.TraefikFrontendEntryPoints),
+		"getBasicAuth":      getFuncServiceSliceStringLabel(label.TraefikFrontendAuthBasic),
+		"getFrontendRules":  getFuncServiceLabelWithPrefix(label.TraefikFrontendRule),
+		"getWhiteList":      getWhiteList,
+		"getHeaders":        getHeaders,
+		"getRedirect":       getRedirect,
+		"getErrorPages":     getErrorPages,
+
+		// SF Service Grouping
+		"getGroupedServices": getFuncServicesGroupedByLabel(traefikSFGroupName),
+		"getGroupedWeight":   getFuncServiceStringLabel(traefikSFGroupWeight, "1"),
+	}
+
+	templateObjects := struct {
+		Services []ServiceItemExtended
+	}{
+		Services: services,
+	}
+
+	return p.GetTemplateConfiguration(tmpl, sfFuncMap, templateObjects)
+}
+
 func isPrimary(instance replicaInstance) bool {
 	_, data := instance.GetReplicaData()
 	return data.ReplicaRole == "Primary"
