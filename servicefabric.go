@@ -13,7 +13,7 @@ import (
 	sf "github.com/jjcollinge/servicefabric"
 	"github.com/traefik/traefik/job"
 	"github.com/traefik/traefik/log"
-	"github.com/traefik/traefik/provider"
+	"github.com/lippylee/traefik/provider"
 	"github.com/traefik/traefik/provider/label"
 	"github.com/traefik/traefik/safe"
 	"github.com/traefik/traefik/types"
