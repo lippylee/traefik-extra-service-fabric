@@ -1,4 +1,4 @@
-module github.com/containous/traefik-extra-service-fabric
+module github.com/lippylee/traefik-extra-service-fabric
 
 go 1.16
 
@@ -26,7 +26,7 @@ require (
 	github.com/ryanuber/go-glob v1.0.0 // indirect
 	github.com/sirupsen/logrus v1.4.0 // indirect
 	github.com/stretchr/testify v1.3.0
-	github.com/traefik/traefik v1.7.27
+	github.com/lippylee/traefik v1.7.34
 	golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c // indirect
 	golang.org/x/sys v0.0.0-20190322080309-f49334f85ddc // indirect
 	gopkg.in/yaml.v2 v2.2.5 // indirect
